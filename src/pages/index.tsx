@@ -8,9 +8,10 @@ import styles from './home.module.scss';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { ptBR } from 'date-fns/locale';
-
-
-
+import Header from '../components/Header';
+import { ExitPreviewButton } from '../components/ExitPreviewButton';
+import commonStyles from '../styles/common.module.scss'
+import { IconContext } from 'react-icons/lib';
 
 interface Post {
   uid?: string;
@@ -29,9 +30,10 @@ interface PostPagination {
 
 interface HomeProps {
   postsPagination: PostPagination;
+  preview: boolean;
 }
 
-export default function Home({postsPagination}: HomeProps) {
+export default function Home({postsPagination, preview}: HomeProps): JSX.Element {
   const [posts, setPosts] = useState<Post[]>(postsPagination.results);
   const [nextPage, setNextPage] = useState<string | null>(postsPagination.next_page); 
   
@@ -58,46 +60,50 @@ export default function Home({postsPagination}: HomeProps) {
 
   return (    
     <>
-      <Head>
-        <title>Home | spacetraveling</title>
-      </Head>
-      <main className={styles.container}>
-        <div className={styles.content}>
-          <img src="Logo.svg" alt="logo"/>                
-          {posts.map( post => (           
-            <Link key={post.uid} href={`/post/${post.uid}`}>
-              <a>
-                <strong>{post.data.title}</strong>
-                <p>{post.data.subtitle}</p>
-                <div>
-                  <div>
-                    <FiCalendar />
-                    <time>{format(new Date(post.first_publication_date), 'dd MMM yyyy',{locale: ptBR})}</time>
-                  </div>
-                  <div>
-                    <FiUser />
-                    <span>{post.data.author}</span>
-                  </div>
-                </div>
-              </a>
-            </Link>
-          ))}
-
-          {nextPage && (
-            <a 
-              className={styles.more}
-              href="/#"
-              onClick={newPostsLoader}
-            >Carregar mais posts</a>
-          )}
-        </div>   
-      </main>
-
-    </>    
+      <IconContext.Provider value={{ style: { verticalAlign: 'middle' } }}>
+        <Head>
+          <title>Home | spacetraveling</title>
+        </Head>
+        <Header />
+        {preview && <ExitPreviewButton />}
+        <main className={commonStyles.container}>
+          <div className={`${styles.posts} ${commonStyles.postsContainer}`}>
+            {posts.map(post => (
+              <Link href={`/post/${post.uid}`}>
+                <a key={post?.uid}>
+                  <strong>{post?.data?.title}</strong>
+                  <p>{post?.data?.subtitle}</p>
+                  <FiCalendar size="1.5rem" />
+                  <time>
+                    {format(
+                      new Date(post.first_publication_date),
+                      'dd MMM yyyy',
+                      {
+                        locale: ptBR,
+                      }
+                    )}
+                  </time>
+                  <FiUser size="1.5rem" />
+                  <span>{post?.data?.author}</span>
+                </a>
+              </Link>
+            ))}
+            {nextPage && (
+              <button type="button" onClick={newPostsLoader}>
+                Carregar mais posts
+              </button>
+            )}
+          </div>
+        </main>
+      </IconContext.Provider>
+    </>   
   )
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps<HomeProps> = async ({
+  preview = false,
+  previewData,
+}) => {
     const prismic = getPrismicClient();
     const postsResponse = await prismic.query([
       Prismic.predicates.at('document.type', 'post')
@@ -106,9 +112,10 @@ export const getStaticProps: GetStaticProps = async () => {
         'post.title', 
         'post.subtitle', 
         'post.author',             
-        ],
-        pageSize: 1,
-    });
+      ],
+      pageSize: 2,
+      ref: previewData?.ref ?? null,
+    })
     const {next_page} = postsResponse;
     const posts = postsResponse.results.map(post => {
       return {
@@ -126,9 +133,10 @@ export const getStaticProps: GetStaticProps = async () => {
       props: {
         postsPagination: {
           next_page,
-          results: posts,
+          results: posts,          
         },
-        revalidate: 60 * 30,
+        preview,
+        
       }
     }
 };

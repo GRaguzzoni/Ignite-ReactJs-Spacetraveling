@@ -1,43 +1,103 @@
-.container {
-  max-width: 1120px;
-  min-height: calc(100vh - 5rem);
-  margin: 0.5rem auto;
-  display: flex;
-  align-items: center;
-  header {
-    h1 {
-      margin-bottom: 1.5rem;
-    }
-    .info {
-      display: flex;
-      div {
-        display: flex;
-        align-items: center;
-        margin-right: 1.5rem;
-        span {
-          margin-left: 0.5rem;
-        }
-      }
-    }
-  }
-}
-
-.content {
-  h2 {
-    margin-top: 4rem;
-    margin-bottom: 2rem;
-  }
-  p {
-    margin-bottom: 1rem;
-    line-height: 1.5rem;
-  }
-}
-
 .banner {
   width: 100%;
-  height: 25rem;
-  background-position: center;
-  background-size: contain;
-  background-repeat: no-repeat;
-  margin-bottom: 4rem;
+  height: 400px;   
 }
+
+.post {
+  border-bottom: 1px solid rgba(215, 215, 215, .1);
+  h1 {
+      font-size: 3rem;
+      line-height: 3.625rem;
+      letter-spacing: -0.5px;
+      padding-bottom: 24px;
+  }
+  .info {
+      height: 1.5rem;
+      line-height: 1.5rem;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      time {
+          margin-left: 0.5rem;
+          margin-right: 1.5rem;
+          color: var(--info);
+      }
+      span {
+  
+          line-height: 100%;
+          margin-left: 0.5rem;
+          margin-right: 1.5rem;
+          color: var(--info);
+      }
+  }
+  .lastEdition {
+      color: var(--info);
+      font-size: 1rem;
+      font-style: italic;
+  }
+  .content {
+      text-align: justify;
+      h3 {
+          font-size: 2.25rem;
+          line-height: 3rem;
+          margin: 64px 0;
+          color: var(--heading);
+      }
+      p {
+          font-size: 1.125rem;
+          line-height: 1.5rem;
+          color: var(--body);
+          margin: 1.5rem 0;
+      }
+  }  
+}
+
+.neighborPosts {
+  max-width: 720px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.neighborPrevPost {
+  text-align: left;
+}
+
+.neighborNextPost {
+  text-align: right;
+  // position: absolute;
+  top: -50px;
+  left: 50px;
+}
+.neighborPostName {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1.125rem;
+  line-height: 1.375rem;
+  letter-spacing: -0.5px;
+  color: var(--heading);
+}
+.neighborPostIndicator {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.1875rem;
+  letter-spacing: -0.5px;
+  color: var(--highlight);
+  margin-top: 0.5rem;
+  &:hover {
+      text-decoration:underline;
+  }
+}
+
+.onlyPrev {
+  max-width: 720px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.onlyNext {
+  max-width: 720px;
+  display: flex;
+  justify-content: flex-end;
+}
+
